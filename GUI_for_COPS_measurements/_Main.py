@@ -20,19 +20,23 @@ class Session(tk.Tk):
                                      font = "Arial 15")
         self.button_left.pack(side = "left", fill = "x", expand = True)
                                      
-        self.button_right = tk.Button(self.frame, text = "Load session", 
+        self.button_middle = tk.Button(self.frame, text = "Load session", 
                                       command = self.loadSession, height = 4, width = 40, bg = "yellow",
                                       font = "Arial 15")
-        self.button_right.pack(side = "left", fill = "x", expand = True)
-                
-        # Stuff for packing frame        
-        #self.frame.pack(side = "top", fill ="x", expand = True)
-                
-#        self.subwin = DataFields()
-#        self.subwin.frame.pack(side="top")
+        self.button_middle.pack(side = "left", fill = "x", expand = True)
         
+        
+        self.button_right = tk.Button(self.frame, text = "Load session", 
+                                      command = self.stopSession, height = 4, width = 40, bg = "green",
+                                      font = "Arial 15")
+        self.button_right.pack(side = "left", fill = "x", expand = True)
+        self.button_right.config(state = "disabled", bg = "gray")
+                
     def startSession(self):
         print("Started Session")
+        self.button_right.config(state = "normal", bg = "green")
+        
+        self.button_left.config(state = "disabled", bg = "gray")
         
         #lambda: controller.show_frame("measurementsWindow")
         
@@ -40,36 +44,11 @@ class Session(tk.Tk):
     def loadSession(self):
         print("Load Session")
         
-class Sessiontest(tk.Tk):
-    # Buttons for starting or loading sessions
-    def __init__(self, frame, container):
-        self.frame = container
+    def stopSession(self):
+        print("Stopping")
+        self.button_right.config(state = "disabled", bg = "gray")
         
-        # Buttons set-up
-        self.button_left = tk.Button(self.frame, text = "Start session", 
-                                     command = self.startSession, height = 4, width = 40, bg = "green",
-                                     font = "Arial 15")
-        self.button_left.pack(side = "left", fill = "x", expand = True)
-                                     
-        self.button_right = tk.Button(self.frame, text = "Load session", 
-                                      command = self.loadSession, height = 4, width = 40, bg = "yellow",
-                                      font = "Arial 15")
-        self.button_right.pack(side = "left", fill = "x", expand = True)
-
-        # Stuff for packing frame        
-        #self.frame.pack(side = "top", fill ="x", expand = True)
-                
-#        self.subwin = DataFields()
-#        self.subwin.frame.pack(side="top")
-        
-    def startSession(self):
-        print("Started Session")
-        
-        #lambda: controller.show_frame("measurementsWindow")
-        
-    
-    def loadSession(self):
-        print("Load Session")
+        self.button_left.config(state = "normal", bg ="green")
 
 class DataFields:
     # Data fields below button
@@ -79,69 +58,74 @@ class DataFields:
         # Set grid sizing for data entries
         self.frame.columnconfigure(4)
         self.frame.rowconfigure(2)
-        data_fields = ["Name", "Sex", "Age", "something else"]
+        data_fields = ["Name", "Sex", "Age", "something else", "something more"]
         
         
         for i, field in enumerate(data_fields):
             labelText = tk.StringVar()
             labelText.set(field)
-            text = tk.Label(self.frame, text = field, height = 4, font = "Arial 10")
+            text = tk.Label(self.frame, text = field, height = 8, font = "Arial 15")
             text.grid(row= 1, column = i)
             #text.pack(side="left")
-#            
-            self.entry = tk.Entry(self.frame, justify='center')
+#       
+            self.entry = tk.Entry(self.frame, justify='center', font = "Arial 15")
             self.entry.grid(row = 2, column = i)
+            
 #        
         #self.frame.pack(side = "bottom",expand = True)
 
-class measurementsWindow:
-    # Frame for showing measurements and such during session
+class Record:
     def __init__(self):
-        self.frame = tk.Frame()
-        
-        self.button_left = tk.Button(self.frame, text = "testing", height = 4, width = 40)
-        self.frame.pack(fill = "x", expand = True)
+        self.frame=tk.Frame()
         
         
-class measurementsWindowtest:
-    # Frame for showing measurements and such during session
-    def __init__(self, frame, container):
-        self.frame = container
+        self.button_start_record = tk.Button(self.frame, text = "Start Record",
+                                       command = self.startRecord, height = 4, width = 40, bg = "red",
+                                       font = "Arial 15")
+                                       
+        self.button_start_record.pack(side = "left", fill = "x", expand = True)
         
-        self.button_left = tk.Button(self.frame, text = "testing", height = 4, width = 40)
-        self.button_left.pack(fill = "x", expand = True)
+        self.button_stop_record = tk.Button(self.frame, text = "Stop Record",
+                                       command = self.stopRecord, height = 4, width = 40, bg = "gray",
+                                       font = "Arial 15")
+
+        self.button_stop_record.config(state = "disabled")                                       
+        self.button_stop_record.pack(side = "left", fill = "x", expand = True)
         
+        
+        
+    def startRecord(self):
+        print("record start")
+        self.button_start_record.configure(bg = "gray")
+        self.button_start_record.config(state = "disabled")
+        
+        self.button_stop_record.configure(bg = "red")
+        self.button_stop_record.config(state = "normal")
+
+
+        
+    def stopRecord(self):
+        print("Stopping")
+        self.button_stop_record.configure(bg = "gray")
+        self.button_stop_record.config(state = "disabled")
+        
+        self.button_start_record.configure(bg = "red")
+        self.button_start_record.config(state = "normal")
+        
+
 class PythonGUI(tk.Tk):
     """ Main window of the GUI, contains the sub windows (frames)
     could stack for increased speed - not necessary here.
     """
     def __init__(self):
-        # Sub-windows
-        tk.Tk.__init__(self)
-        container = tk.Frame(self)
-        container.pack(side = "top", fill = "both", expand = True)
-
-        container.grid_rowconfigure(0, weight = 1)
-        container.grid_columnconfigure(0, weight = 1)
-        
-        self.frames = {}
-        
-#        # Loop through all windows we have, and stack
-#        for F in (Sessiontest, measurementsWindowtest):
-#            frame = F(container,self)
-#            
-#            self.frames[F] = frame
-#            
-#            frame.grid(row = 0, column = 0)
-        
         self.subwin0 = Session()
-        self.subwin0.frame.pack(side = "top")
+        self.subwin0.frame.pack(side = "top", pady = 50)
         
         self.subwin = DataFields()
-        self.subwin.frame.pack(side="top")
-##        
-#        self.sessionWin = measurementsWindow()
-#        self.sessionWin.frame.pack(side = "top")
+        self.subwin.frame.pack(side="top", pady = 30)
+        
+        self.subwin2 = Record()
+        self.subwin2.frame.pack(side = "top", pady = 30)
         
     def show_measure(self):
         self.sessionWin.frame.tkraise()
